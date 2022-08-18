@@ -174,8 +174,8 @@ function changeWindow() {
 }
 
 function keyPress(key) {
-  if(key.keyCode != 32) {
-    return;
+  if(key.keyCode == 32) {
+    smooth = !smooth;
   }
 }
 
