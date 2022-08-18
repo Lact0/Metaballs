@@ -140,4 +140,15 @@ class Vector {
     this.y -= vector.y;
     this.getMag();
   }
+
+  distTo(vector) {
+    return Math.sqrt(Math.pow(this.x - vector.x, 2) + Math.pow(this.y - vector.y, 2));
+  }
+}
+
+class Metaball {
+  constructor(x = rand(0, width - 1), y = rand(0, height - 1), r = 100) {
+    this.pos = new Vector(x, y);
+    this.r = r;
+  }
 }
