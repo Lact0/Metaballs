@@ -1,11 +1,11 @@
 window.onresize = changeWindow;
-const balls = [];
-const vels = [];
-const threshold = 1;
+const balls = [new Metaball({r: 100})];
+const vels = [new Vector()];
+const threshold = 75;
 let grid = [];
 let gridX = 0;
 let gridY = 0;
-let dotDist = 20;
+let dotDist = 5;
 
 function load() {
   makeGrid();
@@ -14,14 +14,20 @@ function load() {
   canvas.width = width;
   canvas.height = height;
   document.onkeydown = keyPress;
+  document.onmousemove = mouseBall;
   ctx.strokeStyle = 'white';
-  for(let i = 0; i < 10; i++) {
-    balls.push(new Metaball());
+  for(let i = 0; i < 15; i++) {
+    balls.push(new Metaball({r: rand(100, 150)}));
     const angle = Math.random() * Math.PI * 2;
     vels.push(new Vector(Math.cos(angle), Math.sin(angle)));
-    vels[i].setMag(1);
+    vels[i].setMag(2);
   }
   runFrame();
+}
+
+function mouseBall() {
+  balls[0].pos.x = event.clientX;
+  balls[0].pos.y = event.clientY;
 }
 
 function runFrame() {

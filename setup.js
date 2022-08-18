@@ -147,8 +147,8 @@ class Vector {
 }
 
 class Metaball {
-  constructor(x = rand(0, width - 1), y = rand(0, height - 1), r = 100) {
-    this.pos = new Vector(x, y);
-    this.r = r;
+  constructor(params = {}) {
+    this.pos = new Vector(params.x || rand(0, width - 1), params.y || rand(0, height - 1));
+    this.r = params.r || 100;
   }
 }
