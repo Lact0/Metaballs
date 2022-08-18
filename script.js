@@ -70,9 +70,6 @@ function marchSquares() {
   for(let i = 0; i < grid.length - 1; i++) {
     for(let j = 0; j < grid[i].length - 1; j++) {
       ctx.strokeStyle = 'white';
-      if(i == 5 && j == 5) {
-        ctx.strokeStyle = 'red';
-      }
       const dot = grid[i][j];
       let x = gridX + dotDist * i;
       let y = gridY + dotDist * j;
