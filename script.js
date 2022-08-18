@@ -1,11 +1,12 @@
 window.onresize = changeWindow;
 const balls = [new Metaball({r: 100})];
 const vels = [new Vector()];
-const threshold = 75;
+const threshold = 50;
 let grid = [];
 let gridX = 0;
 let gridY = 0;
-let dotDist = 5;
+let dotDist = 10;
+let smooth = true;
 
 function load() {
   makeGrid();
@@ -16,11 +17,11 @@ function load() {
   document.onkeydown = keyPress;
   document.onmousemove = mouseBall;
   ctx.strokeStyle = 'white';
-  for(let i = 0; i < 15; i++) {
+  for(let i = 0; i < 20; i++) {
     balls.push(new Metaball({r: rand(100, 150)}));
     const angle = Math.random() * Math.PI * 2;
     vels.push(new Vector(Math.cos(angle), Math.sin(angle)));
-    vels[i].setMag(2);
+    vels[i].setMag(4);
   }
   runFrame();
 }
@@ -79,10 +80,11 @@ function marchSquares() {
       s += grid[i + 1][j] > threshold ? '1' : '0';
       s += grid[i + 1][j + 1] > threshold ? '1' : '0';
       s += grid[i][j + 1] > threshold ? '1' : '0';
-      const top = new Vector(x + dotDist / 2, y);
-      const right = new Vector(x + dotDist, y + dotDist / 2);
-      const bottom = new Vector(x + dotDist / 2, y + dotDist);
-      const left = new Vector(x, y + dotDist / 2);
+      
+      const top = new Vector(x + dotDist * lerp(grid[i][j], grid[i+1][j], threshold), y);
+      const right = new Vector(x + dotDist, y + dotDist * lerp(grid[i + 1][j], grid[i+1][j + 1], threshold));
+      const bottom = new Vector(x + dotDist * lerp(grid[i][j + 1], grid[i+1][j + 1], threshold), y + dotDist);
+      const left = new Vector(x, y + dotDist * lerp(grid[i][j], grid[i][j + 1], threshold));
       let lines = [];
       switch(s) {
         case '0000':
@@ -142,6 +144,13 @@ function marchSquares() {
       }
     }
   }
+}
+
+function lerp(a, b, t) {
+  if(!smooth) {
+    return .5;
+  }
+  return (a - t) / (a - b);
 }
 
 function makeGrid() {
