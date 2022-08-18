@@ -50,19 +50,90 @@ function runFrame() {
       for(let ball of balls) {
         grid[i][j] += max(ball.r - pos.distTo(ball.pos), 0);
       }
-      const color = grid[i][j] >= threshold ? 0 : 255;
-      ctx.fillStyle = 'rgba( 255, ' + color + ', ' + color + ', 1)';
-      ctx.fillRect(pos.x, pos.y, 1, 1);
+      // const color = grid[i][j] >= threshold ? 0 : 255;
+      // ctx.fillStyle = 'rgba(' + color + ', ' + color + ', ' + color + ', 1)';
+      // ctx.fillRect(pos.x, pos.y, 1, 1);
     }
   }
+  marchSquares();
   requestAnimationFrame(runFrame);
 }
 
 function marchSquares() {
   for(let i = 0; i < grid.length - 1; i++) {
-    for(let j = 0; j < grid[i].length - 1; i++) {
+    for(let j = 0; j < grid[i].length - 1; j++) {
+      ctx.strokeStyle = 'white';
+      if(i == 5 && j == 5) {
+        ctx.strokeStyle = 'red';
+      }
+      const dot = grid[i][j];
       let x = gridX + dotDist * i;
       let y = gridY + dotDist * j;
+      let s = dot > threshold ? '1' : '0';
+      s += grid[i + 1][j] > threshold ? '1' : '0';
+      s += grid[i + 1][j + 1] > threshold ? '1' : '0';
+      s += grid[i][j + 1] > threshold ? '1' : '0';
+      const top = new Vector(x + dotDist / 2, y);
+      const right = new Vector(x + dotDist, y + dotDist / 2);
+      const bottom = new Vector(x + dotDist / 2, y + dotDist);
+      const left = new Vector(x, y + dotDist / 2);
+      let lines = [];
+      switch(s) {
+        case '0000':
+          //Nothing
+          break;
+        case '0001':
+          lines = [[left, bottom]];
+          break;
+        case '0010':
+          lines = [[bottom, right]];
+          break;
+        case '0011':
+          lines = [[left, right]];
+          break;
+        case '0100':
+          lines = [[top, right]];
+          break;
+        case '0101':
+          lines = [[left, bottom], [top, right]];
+          break;
+        case '0110':
+          lines = [[top, bottom]];
+          break;
+        case '0111':
+          lines = [[left, top]];
+          break;
+        case '1000':
+          lines = [[left, top]];
+          break;
+        case '1001':
+          lines = [[top, bottom]];
+          break;
+        case '1010':
+          lines = [[left, top], [bottom, right]];
+          break;
+        case '1011':
+          lines = [[top, right]];
+          break;
+        case '1100':
+          lines = [[left, right]];
+          break;
+        case '1101':
+          lines = [[bottom, right]];
+          break;
+        case '1110':
+          lines = [[left, bottom]];
+          break;
+        case '1111':
+          //No Lines
+          break;
+      }
+      for(line of lines) {
+        ctx.beginPath();
+        ctx.moveTo(line[0].x, line[0].y);
+        ctx.lineTo(line[1].x, line[1].y);
+        ctx.stroke();
+      }
     }
   }
 }
